@@ -1,13 +1,13 @@
 const fetch = require('node-fetch');
 
 class YoutubeApi {
-    #api_key;
-    #user_id;
+    api_key;
+    user_id;
     playlistID;
 
     constructor() {
-        this.#api_key = process.env.YOUTUBE_API_KEY;
-        this.#user_id = process.env.YOUTUBE_CHANNEL_ID;
+        this.api_key = process.env.YOUTUBE_API_KEY;
+        this.user_id = process.env.YOUTUBE_CHANNEL_ID;
     }
 
     async fetchRequest(type, url, headers, body) {
@@ -50,7 +50,7 @@ class YoutubeApi {
 
     uploadsPlaylist() {
         let baseUrl = 'https://www.googleapis.com/youtube/v3/channels/';
-        baseUrl += `?part=snippet,contentDetails,statistics&id=${this.#user_id}&key=${this.#api_key}`;
+        baseUrl += `?part=snippet,contentDetails,statistics&id=${this.user_id}&key=${this.api_key}`;
 
         return this.fetchRequest('get', baseUrl, {}).then(playlist => {
             if (playlist.status && playlist.response) {
@@ -66,7 +66,7 @@ class YoutubeApi {
             await this.uploadsPlaylist();
 
             let baseUrl = 'https://www.googleapis.com/youtube/v3/playlistItems';
-            baseUrl += `?part=snippet&playlistId=${this.playlistID }&maxResults=1&key=${this.#api_key}`;
+            baseUrl += `?part=snippet&playlistId=${this.playlistID }&maxResults=1&key=${this.api_key}`;
 
             const video = await this.fetchRequest('get', baseUrl, {});
             if (video.status) res(video);

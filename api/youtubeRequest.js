@@ -7,7 +7,7 @@ class YoutubeApi {
 
     constructor() {
         this.#api_key = process.env.YOUTUBE_API_KEY;
-        this.#user_id = process.env.YOUTUBE_USER_ID;
+        this.#user_id = process.env.YOUTUBE_CHANNEL_ID;
     }
 
     async fetchRequest(type, url, headers, body) {
@@ -48,11 +48,17 @@ class YoutubeApi {
         return output;
     }
 
-    get uploadsPlaylist() {
+    uploadsPlaylist() {
         let baseUrl = 'https://www.googleapis.com/youtube/v3/channels/';
         baseUrl += `?part=snippet,contentDetails,statistics&id=${this.#user_id}&key=${this.#api_key}`;
 
-        this.playlistID = '';
+        return this.fetchRequest('get', baseUrl, {}).then(playlist => {
+            if (playlist.status && playlist.response) {
+                this.playlistID = playlist.response.items[0].contentDetails.relatedPlaylists.uploads;
+                return true;
+            }
+            return false;
+        });
     }
 
      get lastVideo() {
@@ -61,6 +67,10 @@ class YoutubeApi {
 
             let baseUrl = 'https://www.googleapis.com/youtube/v3/playlistItems';
             baseUrl += `?part=snippet&playlistId=${this.playlistID }&maxResults=1&key=${this.#api_key}`;
+
+            const video = await this.fetchRequest('get', baseUrl, {});
+            if (video.status) res(video);
+            else rej(video);
         });
     }
 

@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fs = require('fs');
 const {TwitchApi} = require('./api/twitchRequests.js');
+const {YoutubeApi} = require('./api/youtubeRequest.js');
 
 const indexRouter = require('./routes/index');
 
@@ -16,10 +17,18 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 
 const twitchApi = new TwitchApi();
+const youtubeApi = new YoutubeApi();
 function intervalApi() {
-    api.user
+    twitchApi.user
     .then(user => {
-        fs.writeFile ("data.json", JSON.stringify(user.response), function(err) {
+        fs.writeFile ("twitch.json", JSON.stringify(user.response), function(err) {
+                if (err) throw err;
+            }
+        );
+    });
+    youtubeApi.lastVideo
+    .then(video => {
+        fs.writeFile ("youtube.json", JSON.stringify(video.response), function(err) {
                 if (err) throw err;
             }
         );

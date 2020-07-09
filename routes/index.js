@@ -7,10 +7,15 @@ function readFile() {
     return JSON.parse(rawData);
 }
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
+/* GET twitch listing. */
+router.get('/twitch', function(req, res, next) {
     const fileContent = readFile();
     res.json(fileContent);
+});
+
+/* GET youtube listing. */
+router.get('/youtube', function(req, res, next) {
+    res.json({status: 'WIP'});
 });
 
 module.exports = router;

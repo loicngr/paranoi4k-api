@@ -1,15 +1,13 @@
 const fetch = require('node-fetch');
 
-class TwitchApi {
-    #client_id;
-    #client_secret;
-    #user_login;
-    #client_token;
+class YoutubeApi {
+    #api_key;
+    #user_id;
+    playlistID;
 
     constructor() {
-        this.#client_id = process.env.TWITCH_CLIENT_ID;
-        this.#client_secret = process.env.TWITCH_CLIENT_SECRET;
-        this.#user_login = process.env.TWITCH_USER_LOGIN;
+        this.#api_key = process.env.YOUTUBE_API_KEY;
+        this.#user_id = process.env.YOUTUBE_USER_ID;
     }
 
     async fetchRequest(type, url, headers, body) {
@@ -50,31 +48,22 @@ class TwitchApi {
         return output;
     }
 
-    generateToken() {
-        const url = `https://id.twitch.tv/oauth2/token?client_id=${this.#client_id}&client_secret=${this.#client_secret}&grant_type=client_credentials`;
-        return this.fetchRequest('post', url, {
-            'Client-ID': this.#client_id,
-        }).then(token => {
-            if (token.status && token.response.access_token) {
-                this.#client_token = token.response.access_token;
-                return true;
-            }
-            return false;
-        });
+    get uploadsPlaylist() {
+        let baseUrl = 'https://www.googleapis.com/youtube/v3/channels/';
+        baseUrl += `?part=snippet,contentDetails,statistics&id=${this.#user_id}&key=${this.#api_key}`;
+
+        this.playlistID = '';
     }
 
-    get user() {
+     get lastVideo() {
         return new Promise(async (res, rej) => {
-            await this.generateToken();
-            const user = await this.fetchRequest('get', `https://api.twitch.tv/helix/streams?user_login=${this.#user_login}`, {
-                'Client-ID': this.#client_id,
-                'Authorization': `Bearer ${this.#client_token}`
-            });
-            if (user.status) res(user);
-            else rej(user);
+            await this.uploadsPlaylist();
+
+            let baseUrl = 'https://www.googleapis.com/youtube/v3/playlistItems';
+            baseUrl += `?part=snippet&playlistId=${this.playlistID }&maxResults=1&key=${this.#api_key}`;
         });
     }
 
 }
 
-module.exports = {TwitchApi};
+module.exports = {YoutubeApi};

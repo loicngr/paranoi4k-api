@@ -2,7 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fs = require('fs');
-const {Api} = require('./api/twitchRequests.js');
+const {TwitchApi} = require('./api/twitchRequests.js');
 
 const indexRouter = require('./routes/index');
 
@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 
-const api = new Api();
+const twitchApi = new TwitchApi();
 function intervalApi() {
     api.user
     .then(user => {

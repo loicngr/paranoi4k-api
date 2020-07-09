@@ -1,13 +1,10 @@
 const fetch = require('node-fetch');
 
 class YoutubeApi {
-    api_key;
-    user_id;
-    playlistID;
-
     constructor() {
         this.api_key = process.env.YOUTUBE_API_KEY;
         this.user_id = process.env.YOUTUBE_CHANNEL_ID;
+        this.playlistID = '';
     }
 
     async fetchRequest(type, url, headers, body) {
@@ -61,7 +58,7 @@ class YoutubeApi {
         });
     }
 
-     get lastVideo() {
+    get lastVideo() {
         return new Promise(async (res, rej) => {
             await this.uploadsPlaylist();
 

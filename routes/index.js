@@ -12,13 +12,13 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET twitch listing. */
-router.get('/twitch', function(req, res, next) {
+router.get('/paranoi4k/twitch/stream', function(req, res, next) {
     const fileContent = readFile('twitch.json');
     res.json(fileContent);
 });
 
 /* GET youtube listing. */
-router.get('/youtube', function(req, res, next) {
+router.get('/paranoi4k/youtube/lastvideo', function(req, res, next) {
     const fileContent = readFile('youtube.json');
     res.json(fileContent);
 });

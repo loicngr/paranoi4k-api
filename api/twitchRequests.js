@@ -1,15 +1,11 @@
 const fetch = require('node-fetch');
 
 class TwitchApi {
-    client_id;
-    client_secret;
-    user_login;
-    client_token;
-
     constructor() {
         this.client_id = process.env.TWITCH_CLIENT_ID;
         this.client_secret = process.env.TWITCH_CLIENT_SECRET;
         this.user_login = process.env.TWITCH_USER_LOGIN;
+        this.client_token = '';
     }
 
     async fetchRequest(type, url, headers, body) {
